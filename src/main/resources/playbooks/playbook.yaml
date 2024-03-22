@@ -1,0 +1,38 @@
+---
+- name: Check and start service
+  hosts: nginx-server
+  tasks:
+    - name: Check nginx-service status
+      shell: systemctl is-active nginx-service
+      register: service_status
+      ignore_errors: yes
+
+    - name: Write status to file
+      blockinfile:
+        path: /status/log.txt
+        block: |
+          {{ ansible_date_time.iso8601 }} - {{ "Ok" if service_status.rc == 0 else "Service not available" }}
+
+    - name: Start service if not running
+      when: service_status.rc != 0
+      shell: systemctl start servicename
+      register: start_result
+      notify: email_notification
+
+    - name: Write start result to file
+      blockinfile:
+        path: /status/file
+        block: |
+          {{ ansible_date_time.iso8601 }} - {{ "Ok" if start_result.rc == 0 else "Service not available" }}
+
+  handlers:
+    - name: email_notification and write status to file
+      mail:
+        to: admin@mail.ru
+        subject: Nginx start failed
+        body: The service failed to start. Please investigate.
+        headers: "Content-Type=text/plain"
+        blockinfile:
+          path: /status/log.txt
+          block: |
+            {{ ansible_date_time.iso8601 }} "Service not available" }}

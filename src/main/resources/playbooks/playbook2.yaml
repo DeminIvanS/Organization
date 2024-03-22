@@ -1,0 +1,18 @@
+---
+- name: Archive logs first half of 2022
+  hosts: group_servers
+  become: yes
+  tasks:
+    - name: Create archive directory
+      file:
+        path: /opt/log_archive
+        state: directory
+
+    - name: Archive and delete logs
+      command: >
+        tar -zcvf /opt/log_archive/{{ item.split('/')[-1] }}_2022H1.tar.gz
+        --remove-files {{ item }}
+      with_items:
+        - /opt/log/service_log/accounting/*
+        - /opt/log/service_log/authoriz/*
+        - /opt/log/service_log/authentic/*
