@@ -15,7 +15,6 @@ import org.example.model.enums.DepartmentPosition;
 @Accessors(chain = true)
 public class EntityDepartmentPosition {
     @Id
-    @GeneratedValue
     private Long id;
 
     @Enumerated(EnumType.STRING)

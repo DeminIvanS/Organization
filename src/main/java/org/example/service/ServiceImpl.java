@@ -46,7 +46,7 @@ public class ServiceImpl implements EmployeeService, DepartmentService, Position
         EmployeeDTO employeeDTO = new EmployeeDTO();
         EntityEmployee employee = employeeRepository.findById(id).orElse(null);
         EntityDepartmentPosition departmentPosition = positionRepository.findById(id).orElse(null);
-        MyDepartmentId departmentId = getDepartmentId(employee);
+        MyDepartmentId departmentId = getDepartmentId(employee, departmentPosition);
         EntityDepartment department = departmentRepository.findById(departmentId).orElse(null);
 
         fillEntity(employee, departmentPosition, department, employeeDTO);
@@ -64,17 +64,10 @@ public class ServiceImpl implements EmployeeService, DepartmentService, Position
         return departmentRepository.findAll();
     }
 
-    private MyDepartmentId getDepartmentId(EntityEmployee employee) {
+    private MyDepartmentId getDepartmentId(EntityEmployee employee, EntityDepartmentPosition departmentPosition) {
         MyDepartmentId departmentId = new MyDepartmentId();
         departmentId.setLastName(employee.getLastName());
-        for (Department d : Department.values()) {
-            departmentId.setDepartment(d);
-            if ((departmentRepository.findById(departmentId).orElse(null)) == null) {
-
-            } else {
-                return departmentId;
-            }
-        }
+        departmentId.setDepartment(departmentPosition.getPosition().getDepartment());
         return departmentId;
     }
 
@@ -107,6 +100,7 @@ public class ServiceImpl implements EmployeeService, DepartmentService, Position
         initializeDepartment(employeeDTO, department);
         initializeDepartmentId(employeeDTO, departmentId);
         departmentPosition.setPosition(employeeDTO.getPosition());
+        departmentPosition.setId(employeeDTO.getId());
         boolean isSaved = isSavedDepartment(departmentId);
         saveDepartment(department);
         savePosition(departmentPosition, isSaved);
