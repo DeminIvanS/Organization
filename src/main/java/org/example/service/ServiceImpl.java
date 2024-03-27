@@ -7,7 +7,6 @@ import org.example.model.entity.EntityDepartment;
 import org.example.model.entity.EntityDepartmentPosition;
 import org.example.model.entity.EntityEmployee;
 import org.example.model.entity.MyDepartmentId;
-import org.example.model.enums.Department;
 import org.example.repository.EntityDepartmentRepository;
 import org.example.repository.EntityEmployeeRepository;
 import org.example.repository.EntityPositionRepository;
@@ -100,9 +99,10 @@ public class ServiceImpl implements EmployeeService, DepartmentService, Position
         initializeDepartment(employeeDTO, department);
         initializeDepartmentId(employeeDTO, departmentId);
         departmentPosition.setPosition(employeeDTO.getPosition());
-        departmentPosition.setId(employeeDTO.getId());
         boolean isSaved = isSavedDepartment(departmentId);
         saveDepartment(department);
+        employeeRepository.saveCustom(employee,isSaved);
+        departmentPosition.setId(employee.getId());
         savePosition(departmentPosition, isSaved);
 
 

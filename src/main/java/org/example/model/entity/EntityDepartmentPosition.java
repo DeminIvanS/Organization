@@ -18,7 +18,7 @@ public class EntityDepartmentPosition {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    //  @JoinColumn(name = "department_position")
+
     private DepartmentPosition position;
 
 

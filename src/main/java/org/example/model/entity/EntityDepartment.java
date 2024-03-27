@@ -18,10 +18,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @IdClass(MyDepartmentId.class)
 public class EntityDepartment implements Serializable {
-   /* @Id
-    @GeneratedValue
-    private Long id;
-*/
+
 
     @Id
     @Enumerated(EnumType.STRING)
